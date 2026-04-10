@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anhelina Mahidava — Front-End Developer</title>
+<meta name="description" content="Senior React & Webflow developer with 7+ years of experience. Building high-performance products for FinTech and AdTech.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --sky-top: #7fc8e8;
+    --sky-mid: #a8dcf0;
+    --sky-bot: #d6f0f7;
+    --sims-blue: #1b7fc4;
+    --sims-blue-deep: #0e5a91;
+    --sims-green: #3dd67d;
+    --sims-green-deep: #28a85e;
+    --ui-bg: rgba(255, 255, 255, 0.92);
+    --ui-border: #1b7fc4;
+    --ink: #0e2a3d;
+    --muted: #5a7a8c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Nunito', -apple-system, sans-serif;
+    color: var(--ink);
+    user-select: none;
+  }
+
+  body {
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bot) 100%);
+    position: relative;
+  }
+
+  #scene {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* Loading screen */
+  #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    transition: opacity 0.6s ease;
+  }
+  #loader.hidden { opacity: 0; pointer-events: none; }
+  .loader-box {
+    background: var(--ui-bg);
+    border: 3px solid var(--ui-border);
+    border-radius: 14px;
+    padding: 24px 40px;
+    box-shadow: 0 6px 0 var(--sims-blue-deep), 0 12px 24px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+  .loader-box h2 {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .loader-bar {
+    width: 240px;
+    height: 10px;
+    background: #e0ecf2;
+    border: 1px solid #b8d0dc;
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .loader-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--sims-green) 0%, var(--sims-green-deep) 100%);
+    border-radius: 100px;
+    transition: width 0.3s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  .loader-pct {
+    font-family: 'Nunito', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* ═════════ TOP BAR ═════════ */
+  .topbar {
+    position: fixed;
+    top: 20px; left: 20px; right: 20px;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+  }
+  .nameplate {
+    background: var(--ui-bg);
+    border: 3px solid var(--ui-border);
+    border-radius: 14px;
+    padding: 12px 20px;
+    box-shadow: 0 6px 0 var(--sims-blue-deep), 0 12px 24px rgba(0,0,0,0.15);
+    pointer-events: auto;
+  }
+  .nameplate .title {
+    font-weight: 900;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nameplate .title::before {
+    content: '';
+    width: 10px; height: 10px;
+    background: var(--sims-green);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(61, 214, 125, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+  }
+  .nameplate .sub {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: auto;
+  }
+  .pill {
+    background: var(--ui-bg);
+    border: 2px solid var(--ui-border);
+    border-radius: 100px;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    box-shadow: 0 3px 0 var(--sims-blue-deep);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pill .status {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--sims-green);
+  }
+
+  /* ═════════ SKILLS HUD (left) ═════════ */
+  .skills {
+    position: fixed;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    z-index: 40;
+    background: var(--ui-bg);
+    border: 3px solid var(--ui-border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 6px 0 var(--sims-blue-deep), 0 12px 24px rgba(0,0,0,0.15);
+    width: 220px;
+  }
+  .skills h4 {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sims-blue-deep);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .skills h4::before {
+    content: '◆';
+    color: var(--sims-green);
+    font-size: 10px;
+  }
+  .skill-row {
+    margin-bottom: 10px;
+  }
+  .skill-row:last-child { margin-bottom: 0; }
+  .skill-row .label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .skill-row .label .val {
+    color: var(--sims-green-deep);
+  }
+  .bar {
+    height: 8px;
+    background: #e0ecf2;
+    border: 1px solid #b8d0dc;
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sims-green) 0%, var(--sims-green-deep) 100%);
+    border-radius: 100px;
+    width: 0;
+    animation: fillUp 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  @keyframes fillUp {
+    to { width: var(--target, 100%); }
+  }
+
+  /* ═════════ PROJECT CARDS ═════════ */
+  .project-card {
+    position: fixed;
+    z-index: 30;
+    width: 230px;
+    background: var(--ui-bg);
+    border: 3px solid var(--ui-border);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 6px 0 var(--sims-blue-deep), 0 14px 28px rgba(0,0,0,0.18);
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .project-card:hover {
+    transform: translateY(-6px) scale(1.04);
+    border-color: var(--sims-green-deep);
+    box-shadow: 0 10px 0 var(--sims-green-deep), 0 18px 32px rgba(0,0,0,0.22);
+  }
+  .project-card.active {
+    border-color: var(--sims-green-deep);
+    box-shadow: 0 10px 0 var(--sims-green-deep), 0 0 0 4px rgba(61, 214, 125, 0.25), 0 18px 32px rgba(0,0,0,0.22);
+  }
+
+  .project-card .badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sims-blue-deep);
+    background: #dbeaf4;
+    padding: 3px 8px;
+    border-radius: 100px;
+    margin-bottom: 8px;
+  }
+  .project-card .badge.featured {
+    color: #8a5a00;
+    background: #ffe8a8;
+  }
+  .project-card h3 {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin-bottom: 4px;
+  }
+  .project-card .role {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .project-card .desc {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #35556a;
+    margin-bottom: 10px;
+  }
+  .project-card .cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sims-blue-deep);
+    padding-top: 8px;
+    border-top: 2px dashed #c4d7e3;
+  }
+  .project-card .cta .arrow {
+    transition: transform 0.3s ease;
+  }
+  .project-card:hover .cta .arrow { transform: translateX(4px); }
+
+  /* positioning */
+  .card-tl { top: 100px; left: 270px; }
+  .card-tr { top: 100px; right: 120px; }
+  .card-bl { bottom: 120px; left: 270px; }
+  .card-br { bottom: 120px; right: 120px; }
+
+  /* ═════════ BOTTOM ACTION BAR ═════════ */
+  .actionbar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    background: var(--ui-bg);
+    border: 3px solid var(--ui-border);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 6px 0 var(--sims-blue-deep), 0 14px 28px rgba(0,0,0,0.18);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .action {
+    background: linear-gradient(180deg, #ffffff 0%, #e8f2f8 100%);
+    border: 2px solid var(--ui-border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 0 var(--sims-blue-deep);
+  }
+  .action:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(180deg, #fff9d6 0%, #ffecb8 100%);
+    box-shadow: 0 5px 0 var(--sims-blue-deep);
+  }
+  .action:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 0 var(--sims-blue-deep);
+  }
+  .action.primary {
+    background: linear-gradient(180deg, var(--sims-green) 0%, var(--sims-green-deep) 100%);
+    color: white;
+    border-color: var(--sims-green-deep);
+    box-shadow: 0 3px 0 #1e7a42;
+  }
+  .action.primary:hover {
+    background: linear-gradient(180deg, #5df09b 0%, var(--sims-green) 100%);
+    box-shadow: 0 5px 0 #1e7a42;
+  }
+  .action .ico { font-size: 14px; }
+
+  /* ═════════ HINT ═════════ */
+  .hint {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 40;
+    background: rgba(14, 42, 61, 0.85);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    animation: hintFade 6s ease-in-out forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+  }
+  @keyframes hintFade {
+    0% { opacity: 0; transform: translate(-50%, -8px); }
+    10%, 70% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -8px); }
+  }
+
+  /* ═════════ SPEECH ═════════ */
+  .speech {
+    position: fixed;
+    z-index: 45;
+    background: white;
+    border: 3px solid var(--ui-border);
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--ink);
+    box-shadow: 0 4px 0 var(--sims-blue-deep);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    white-space: nowrap;
+  }
+  .speech.show { opacity: 1; }
+
+  /* ═════════ MOBILE ═════════ */
+  @media (max-width: 1100px) {
+    .skills { display: none; }
+    .card-tl { top: 80px; left: 20px; width: calc(50vw - 30px); max-width: 230px; }
+    .card-tr { top: 80px; right: 20px; width: calc(50vw - 30px); max-width: 230px; }
+    .card-bl { bottom: 100px; left: 20px; width: calc(50vw - 30px); max-width: 230px; }
+    .card-br { bottom: 100px; right: 20px; width: calc(50vw - 30px); max-width: 230px; }
+  }
+  @media (max-width: 700px) {
+    .project-card h3 { font-size: 14px; }
+    .project-card .desc { display: none; }
+    .nameplate .title { font-size: 15px; }
+    .controls { display: none; }
+    .actionbar { padding: 8px; gap: 4px; }
+    .action { padding: 8px 12px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+
+<!-- Loader -->
+<div id="loader">
+  <div class="loader-box">
+    <h2>Loading character…</h2>
+    <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+    <div class="loader-pct" id="loaderPct">0%</div>
+  </div>
+</div>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="nameplate">
+    <div class="title">Anhelina Mahidava</div>
+    <div class="sub">Sr. React &amp; Webflow Developer · 7+ yrs · Wrocław</div>
+  </div>
+  <div class="controls">
+    <div class="pill"><span class="status"></span>Available for work</div>
+    <div class="pill">◆ Level 7 · Front-End</div>
+  </div>
+</div>
+
+<!-- Hint -->
+<div class="hint">✦ Drag to rotate · Hover projects to interact ✦</div>
+
+<!-- Skills HUD -->
+<div class="skills">
+  <h4>Skills</h4>
+  <div class="skill-row">
+    <div class="label"><span>React / Next.js</span><span class="val">10/10</span></div>
+    <div class="bar"><div class="fill" style="--target: 100%; animation-delay: 0.2s;"></div></div>
+  </div>
+  <div class="skill-row">
+    <div class="label"><span>TypeScript</span><span class="val">10/10</span></div>
+    <div class="bar"><div class="fill" style="--target: 100%; animation-delay: 0.35s;"></div></div>
+  </div>
+  <div class="skill-row">
+    <div class="label"><span>Webflow</span><span class="val">9/10</span></div>
+    <div class="bar"><div class="fill" style="--target: 90%; animation-delay: 0.5s;"></div></div>
+  </div>
+  <div class="skill-row">
+    <div class="label"><span>Node / NestJS</span><span class="val">8/10</span></div>
+    <div class="bar"><div class="fill" style="--target: 80%; animation-delay: 0.65s;"></div></div>
+  </div>
+  <div class="skill-row">
+    <div class="label"><span>GraphQL</span><span class="val">8/10</span></div>
+    <div class="bar"><div class="fill" style="--target: 80%; animation-delay: 0.8s;"></div></div>
+  </div>
+  <div class="skill-row">
+    <div class="label"><span>Performance</span><span class="val">10/10</span></div>
+    <div class="bar"><div class="fill" style="--target: 100%; animation-delay: 0.95s;"></div></div>
+  </div>
+</div>
+
+<!-- Project Cards -->
+<a href="https://astrologia.guru" target="_blank" rel="noopener" class="project-card card-tl" data-proj="0">
+  <span class="badge featured">★ Featured · Own Product</span>
+  <h3>Astrologia.guru</h3>
+  <div class="role">Founder · Webflow → React + C#</div>
+  <div class="desc">Revenue-generating astrology web app. Launched MVP on Webflow in 2 weeks, migrated to React + C# at scale.</div>
+  <div class="cta">Visit site <span class="arrow">→</span></div>
+</a>
+
+<a href="https://novastorm.ai" target="_blank" rel="noopener" class="project-card card-tr" data-proj="1">
+  <span class="badge featured">★ Featured · Own Product</span>
+  <h3>Novastorm.ai</h3>
+  <div class="role">Founder · Webflow → React</div>
+  <div class="desc">Second own product. Same playbook: fast Webflow MVP, then custom React rebuild once direction was clear.</div>
+  <div class="cta">Visit site <span class="arrow">→</span></div>
+</a>
+
+<a href="https://synder.com" target="_blank" rel="noopener" class="project-card card-bl" data-proj="2">
+  <span class="badge">YC21 · FinTech SaaS</span>
+  <h3>Synder</h3>
+  <div class="role">Sr. Front-End · 7 yrs</div>
+  <div class="desc">Owned ~90% of frontend. 300+ components, 50% faster page loads, 99.5% uptime, 12% conversion lift.</div>
+  <div class="cta">synder.com <span class="arrow">→</span></div>
+</a>
+
+<a href="#" onclick="return false;" class="project-card card-br" data-proj="3">
+  <span class="badge">Current · AdTech</span>
+  <h3>Adhese</h3>
+  <div class="role">Full-Stack · React + NestJS + Java</div>
+  <div class="desc">High-performance ad delivery platform across Europe. Shipped first PR in 3 days, 5 features in first month.</div>
+  <div class="cta">Internal product <span class="arrow">✦</span></div>
+</a>
+
+<!-- Speech bubble -->
+<div class="speech" id="speech">Hello! 👋</div>
+
+<!-- Bottom action bar -->
+<div class="actionbar">
+  <a href="https://www.upwork.com/freelancers/~015b351ae7129daea2" target="_blank" rel="noopener" class="action">
+    <span class="ico">✦</span> Upwork
+  </a>
+  <a href="mailto:mahidavaanhelina@gmail.com" class="action">
+    <span class="ico">✉</span> Email
+  </a>
+  <a href="https://www.linkedin.com/in/anhelina-mahidava/" target="_blank" rel="noopener" class="action">
+    <span class="ico">in</span> LinkedIn
+  </a>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+// ═══════════════════════════════════════════════════════
+// SCENE SETUP
+// ═══════════════════════════════════════════════════════
+const canvas = document.getElementById('scene');
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xa8dcf0, 15, 40);
+
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 1.5, 4.5);
+camera.lookAt(0, 1.2, 0);
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+
+// ═══════════════════════════════════════════════════════
+// LIGHTING
+// ═══════════════════════════════════════════════════════
+const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(ambient);
+
+const hemi = new THREE.HemisphereLight(0xb8e0ff, 0x7ab84e, 0.5);
+hemi.position.set(0, 10, 0);
+scene.add(hemi);
+
+const key = new THREE.DirectionalLight(0xfff4e0, 1.6);
+key.position.set(4, 8, 5);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.near = 0.5;
+key.shadow.camera.far = 30;
+key.shadow.camera.left = -5;
+key.shadow.camera.right = 5;
+key.shadow.camera.top = 5;
+key.shadow.camera.bottom = -5;
+key.shadow.bias = -0.0005;
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0xb8e0ff, 0.5);
+fill.position.set(-5, 3, 2);
+scene.add(fill);
+
+const rim = new THREE.DirectionalLight(0xffd6a5, 0.4);
+rim.position.set(0, 4, -5);
+scene.add(rim);
+
+// ═══════════════════════════════════════════════════════
+// GROUND
+// ═══════════════════════════════════════════════════════
+const groundGeo = new THREE.CircleGeometry(6, 48);
+const groundMat = new THREE.MeshStandardMaterial({ color: 0x7ab84e, roughness: 0.9 });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// grass tufts
+for (let i = 0; i < 24; i++) {
+  const angle = Math.random() * Math.PI * 2;
+  const r = 1.5 + Math.random() * 4;
+  const tuftGeo = new THREE.ConeGeometry(0.08, 0.15, 4);
+  const tuftMat = new THREE.MeshStandardMaterial({ color: 0x5ba030, roughness: 1 });
+  const tuft = new THREE.Mesh(tuftGeo, tuftMat);
+  tuft.position.set(Math.cos(angle) * r, 0.07, Math.sin(angle) * r);
+  tuft.rotation.y = Math.random() * Math.PI;
+  scene.add(tuft);
+}
+
+// ═══════════════════════════════════════════════════════
+// CHARACTER HOLDER + PLUMBOB
+// ═══════════════════════════════════════════════════════
+const characterRoot = new THREE.Group();
+scene.add(characterRoot);
+
+// Plumbob (Sims green diamond above head)
+const plumbobGroup = new THREE.Group();
+plumbobGroup.position.y = 2.15;
+characterRoot.add(plumbobGroup);
+
+const plumbobGeo = new THREE.OctahedronGeometry(0.11, 0);
+const plumbobMat = new THREE.MeshStandardMaterial({
+  color: 0x3dd67d,
+  emissive: 0x2da85a,
+  emissiveIntensity: 0.9,
+  roughness: 0.2,
+  metalness: 0.3,
+});
+const plumbob = new THREE.Mesh(plumbobGeo, plumbobMat);
+plumbob.scale.set(0.85, 1.35, 0.85);
+plumbobGroup.add(plumbob);
+
+const plumbobLight = new THREE.PointLight(0x3dd67d, 0.8, 3);
+plumbobGroup.add(plumbobLight);
+
+// ═══════════════════════════════════════════════════════
+// LOAD CHARACTER MODEL
+// ═══════════════════════════════════════════════════════
+const loader = new GLTFLoader();
+
+// Bone references (filled after load)
+const bones = {};
+let mixer = null;
+let modelLoaded = false;
+
+const loaderEl = document.getElementById('loader');
+const loaderFill = document.getElementById('loaderFill');
+const loaderPct = document.getElementById('loaderPct');
+
+loader.load(
+  './models/character.glb',
+  (gltf) => {
+    const model = gltf.scene;
+
+    // Ready Player Me models come at realistic scale (~1.7m tall)
+    // Position so feet are on ground
+    model.position.set(0, 0, 0);
+
+    // Traverse to enable shadows and find bones
+    model.traverse((obj) => {
+      if (obj.isMesh || obj.isSkinnedMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+        if (obj.material) {
+          obj.material.side = THREE.FrontSide;
+        }
+      }
+      if (obj.isBone) {
+        bones[obj.name] = obj;
+      }
+    });
+
+    characterRoot.add(model);
+
+    // Collapse T-pose → arms-by-the-side, pushed slightly outward so they
+    // don't clip into the torso/text. We aim each arm's local +Y axis at a
+    // target direction in world space, then convert that into the parent
+    // (Shoulder) local frame so bone.quaternion stays parent-relative.
+    const aimArm = (armName, worldDir) => {
+      const bone = bones[armName];
+      if (!bone) return;
+      const parent = bone.parent;
+      parent.updateMatrixWorld(true);
+      const parentWorldQuat = parent.getWorldQuaternion(new THREE.Quaternion());
+      const dirInParent = worldDir.clone().normalize()
+        .applyQuaternion(parentWorldQuat.clone().invert());
+      const q = new THREE.Quaternion()
+        .setFromUnitVectors(new THREE.Vector3(0, 1, 0), dirInParent);
+      bone.quaternion.copy(q);
+    };
+    // Rest: mostly down, tilted ~15° outward from the body.
+    aimArm('LeftArm',  new THREE.Vector3( 0.26, -1, 0));
+    aimArm('RightArm', new THREE.Vector3(-0.26, -1, 0));
+
+    // Slight elbow bend: aim the forearm's local +Y mostly down but tilted
+    // forward (+Z world), so hands come in front of the hips.
+    aimArm('LeftForeArm',  new THREE.Vector3( 0.10, -1, 0.45));
+    aimArm('RightForeArm', new THREE.Vector3(-0.10, -1, 0.45));
+
+    // Snapshot rest quaternions so pointing can slerp back to them.
+    ['LeftArm','RightArm','LeftForeArm','RightForeArm'].forEach(n => {
+      if (bones[n]) bones[n].userData.restQuat = bones[n].quaternion.clone();
+    });
+
+    // Store initial rotations AFTER the rest correction, so everything
+    // below animates relative to this natural pose.
+    const armBones = [
+      'LeftArm', 'RightArm',
+      'LeftForeArm', 'RightForeArm',
+      'LeftShoulder', 'RightShoulder',
+      'Head', 'Neck', 'Spine', 'Spine1', 'Spine2', 'Hips'
+    ];
+    armBones.forEach(name => {
+      if (bones[name]) {
+        bones[name].userData.restRot = bones[name].rotation.clone();
+      }
+    });
+
+    // Setup animation mixer. This model ships a 'gesture_1' clip;
+    // we DON'T play it as idle because it would override our arm pose.
+    // We only use the mixer for the subtle idle sway we animate manually.
+    if (gltf.animations && gltf.animations.length > 0) {
+      mixer = new THREE.AnimationMixer(model);
+      // Uncomment the next 3 lines to preview the baked gesture animation:
+      // const clip = gltf.animations[0];
+      // const action = mixer.clipAction(clip);
+      // action.play();
+    }
+
+    modelLoaded = true;
+    loaderEl.classList.add('hidden');
+    setTimeout(() => loaderEl.style.display = 'none', 600);
+  },
+  (xhr) => {
+    if (xhr.lengthComputable) {
+      const pct = Math.round((xhr.loaded / xhr.total) * 100);
+      loaderFill.style.width = pct + '%';
+      loaderPct.textContent = pct + '%';
+    }
+  },
+  (err) => {
+    console.error('Model load failed:', err);
+    loaderEl.innerHTML = '<div class="loader-box"><h2 style="color:#c25858;">Failed to load model</h2><div class="loader-pct">Check console. Make sure you run this from a local server (python3 -m http.server) not file://</div></div>';
+  }
+);
+
+// ═══════════════════════════════════════════════════════
+// INTERACTION
+// ═══════════════════════════════════════════════════════
+const mouse = { nx: 0, ny: 0 };
+let hoveredProject = -1;
+let isDragging = false;
+let dragStartX = 0;
+let dragStartRot = 0;
+let manualRotation = 0;
+
+// Project target directions (in local character space)
+// Index: 0=TL, 1=TR, 2=BL, 3=BR
+const projectTargets = [
+  { side: 'L', up: true },   // top-left
+  { side: 'R', up: true },   // top-right
+  { side: 'L', up: false },  // bottom-left
+  { side: 'R', up: false },  // bottom-right
+];
+
+window.addEventListener('mousemove', (e) => {
+  mouse.nx = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.ny = -((e.clientY / window.innerHeight) * 2 - 1);
+  if (isDragging) {
+    const dx = e.clientX - dragStartX;
+    manualRotation = dragStartRot + dx * 0.01;
+  }
+});
+
+canvas.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragStartRot = manualRotation;
+  canvas.style.cursor = 'grabbing';
+});
+window.addEventListener('mouseup', () => {
+  isDragging = false;
+  canvas.style.cursor = 'grab';
+});
+canvas.style.cursor = 'grab';
+
+canvas.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 1) {
+    isDragging = true;
+    dragStartX = e.touches[0].clientX;
+    dragStartRot = manualRotation;
+  }
+});
+canvas.addEventListener('touchmove', (e) => {
+  if (isDragging && e.touches.length === 1) {
+    const dx = e.touches[0].clientX - dragStartX;
+    manualRotation = dragStartRot + dx * 0.01;
+  }
+});
+canvas.addEventListener('touchend', () => { isDragging = false; });
+
+// Project card hover
+const cards = document.querySelectorAll('.project-card');
+const speech = document.getElementById('speech');
+const speechMessages = [
+  "Astrologia.guru — my own product! ✨",
+  "Novastorm.ai — also mine! 🚀",
+  "Synder, YC21 — 7 years here 💎",
+  "Currently at Adhese 🛠",
+];
+
+cards.forEach((card, i) => {
+  card.addEventListener('mouseenter', () => {
+    hoveredProject = i;
+    cards.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    speech.textContent = speechMessages[i];
+    speech.classList.add('show');
+    speech.style.left = (window.innerWidth / 2 - 100) + 'px';
+    speech.style.top = (window.innerHeight / 2 - 200) + 'px';
+  });
+  card.addEventListener('mouseleave', () => {
+    if (hoveredProject === i) {
+      hoveredProject = -1;
+      card.classList.remove('active');
+      speech.classList.remove('show');
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+// ANIMATION LOOP
+// ═══════════════════════════════════════════════════════
+const clock = new THREE.Clock();
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+function animate() {
+  const t = clock.getElapsedTime();
+  const dt = clock.getDelta();
+
+  if (mixer) mixer.update(dt);
+
+  // Plumbob spin + bob
+  plumbobGroup.rotation.y = t * 1.5;
+  plumbobGroup.position.y = 2.15 + Math.sin(t * 2) * 0.05;
+
+  if (modelLoaded) {
+    // ── body rotation ──
+    const idleSway = Math.sin(t * 0.8) * 0.03;
+    let targetRot;
+    if (!isDragging) {
+      targetRot = manualRotation + mouse.nx * 0.25 + idleSway;
+    } else {
+      targetRot = manualRotation;
+    }
+    characterRoot.rotation.y = lerp(characterRoot.rotation.y, targetRot, 0.08);
+
+    // ── head tracking ──
+    if (bones.Head) {
+      const rest = bones.Head.userData.restRot;
+      const targetY = rest.y + mouse.nx * 0.35;
+      const targetX = rest.x + -mouse.ny * 0.2;
+      bones.Head.rotation.y = lerp(bones.Head.rotation.y, targetY, 0.1);
+      bones.Head.rotation.x = lerp(bones.Head.rotation.x, targetX, 0.1);
+    }
+    if (bones.Neck) {
+      const rest = bones.Neck.userData.restRot;
+      const targetY = rest.y + mouse.nx * 0.15;
+      bones.Neck.rotation.y = lerp(bones.Neck.rotation.y, targetY, 0.1);
+    }
+
+    // ── spine slight turn for life ──
+    if (bones.Spine2) {
+      const rest = bones.Spine2.userData.restRot;
+      const targetY = rest.y + mouse.nx * 0.08;
+      bones.Spine2.rotation.y = lerp(bones.Spine2.rotation.y, targetY, 0.05);
+    }
+
+    // ── ARM POINTING ──
+    // Left card indices (0=TL, 2=BL) use LeftArm; right (1=TR, 3=BR) use RightArm.
+    const armForCard = { 0: 'RightArm', 1: 'LeftArm', 2: 'RightArm', 3: 'LeftArm' };
+    const activeArm = armForCard[hoveredProject];
+
+    ['LeftArm','RightArm'].forEach(name => {
+      const bone = bones[name];
+      if (!bone) return;
+      const restQ = bone.userData.restQuat;
+      let targetQ = restQ;
+
+      if (name === activeArm) {
+        const card = cards[hoveredProject];
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        // Unproject card center onto a plane at the character's depth.
+        const ndc = new THREE.Vector3(
+          (cx / window.innerWidth) * 2 - 1,
+          -(cy / window.innerHeight) * 2 + 1,
+          0.5
+        );
+        ndc.unproject(camera);
+        const rayDir = ndc.sub(camera.position).normalize();
+        // Intersect with plane z = 0 (character stands at origin).
+        const tHit = -camera.position.z / rayDir.z;
+        const worldTarget = camera.position.clone().add(rayDir.multiplyScalar(tHit));
+
+        // Direction from the shoulder to the target, in world space.
+        const shoulderPos = bone.getWorldPosition(new THREE.Vector3());
+        const worldDir = worldTarget.sub(shoulderPos).normalize();
+
+        // Convert into the parent's local space.
+        const parentWorldQuat = bone.parent.getWorldQuaternion(new THREE.Quaternion());
+        const dirInParent = worldDir.applyQuaternion(parentWorldQuat.invert());
+        targetQ = new THREE.Quaternion()
+          .setFromUnitVectors(new THREE.Vector3(0, 1, 0), dirInParent);
+      }
+
+      bone.quaternion.slerp(targetQ, 0.15);
+    });
+
+    // Subtle breathing via spine
+    if (bones.Spine) {
+      const rest = bones.Spine.userData.restRot;
+      bones.Spine.rotation.x = rest.x + Math.sin(t * 1.8) * 0.01;
+    }
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ═══════════════════════════════════════════════════════
+// RESIZE
+// ═══════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+
+</body>
+</html>
