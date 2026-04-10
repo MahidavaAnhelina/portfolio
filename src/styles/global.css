@@ -26,9 +26,15 @@ body,
   color: var(--ink);
 }
 
+html,
+body {
+  overflow: hidden;
+  user-select: none;
+}
+
 body {
   background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bot) 100%);
-  overflow: hidden;
+  position: relative;
 }
 
 a {
@@ -36,6 +42,7 @@ a {
   text-decoration: none;
 }
 
+/* Shared page placeholder used by Phase 1 scaffolding pages */
 .page-placeholder {
   height: 100%;
   display: flex;
