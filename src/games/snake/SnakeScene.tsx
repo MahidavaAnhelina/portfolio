@@ -1,6 +1,6 @@
-import { useMemo, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import type { Mesh } from 'three';
+import { useEffect, useRef } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import type { Mesh, OrthographicCamera as ThreeOrthographicCamera } from 'three';
 import type { Action, Cell, State } from './state';
 import { GRID_SIZE, tickMsForScore } from './state';
 
@@ -73,6 +73,23 @@ function Food({ food }: { food: Cell }) {
   );
 }
 
+function OrthoFit() {
+  const { camera, size } = useThree();
+  useEffect(() => {
+    const ortho = camera as ThreeOrthographicCamera;
+    if (!ortho.isOrthographicCamera) return;
+    // Fit the playfield (plus a small margin) into the viewport while
+    // preserving aspect. Zoom is inversely proportional to visible units
+    // per pixel; pick whichever axis is tighter.
+    const half = (GRID_SIZE * CELL) / 2 + 1.2;
+    const zoomX = size.width / (half * 2);
+    const zoomY = size.height / (half * 2);
+    ortho.zoom = Math.min(zoomX, zoomY);
+    ortho.updateProjectionMatrix();
+  }, [camera, size.width, size.height]);
+  return null;
+}
+
 function GameTicker({
   state,
   dispatch,
@@ -102,13 +119,17 @@ type Props = {
 };
 
 export default function SnakeScene({ state, dispatch }: Props) {
-  const camDist = useMemo(() => GRID_SIZE * 0.85, []);
-
   return (
     <Canvas
       shadows
       dpr={[1, 2]}
-      camera={{ position: [camDist * 0.4, camDist, camDist * 0.4], fov: 45 }}
+      orthographic
+      camera={{
+        position: [0, 30, 0.0001], // top-down; tiny z offset so "up" resolves
+        near: 0.1,
+        far: 100,
+        zoom: 30,
+      }}
       style={{ position: 'absolute', inset: 0 }}
     >
       <color attach="background" args={[0xa8dcf0]} />
@@ -128,6 +149,7 @@ export default function SnakeScene({ state, dispatch }: Props) {
         shadow-camera-bottom={-15}
       />
 
+      <OrthoFit />
       <Board />
       <SnakeBody snake={state.snake} />
       <Food food={state.food} />
