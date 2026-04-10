@@ -1,0 +1,85 @@
+:root {
+  --sky-top: #7fc8e8;
+  --sky-mid: #a8dcf0;
+  --sky-bot: #d6f0f7;
+  --sims-blue: #1b7fc4;
+  --sims-blue-deep: #0e5a91;
+  --sims-green: #3dd67d;
+  --sims-green-deep: #28a85e;
+  --ui-bg: rgba(255, 255, 255, 0.92);
+  --ui-border: #1b7fc4;
+  --ink: #0e2a3d;
+  --muted: #5a7a8c;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  font-family: 'Nunito', -apple-system, sans-serif;
+  color: var(--ink);
+}
+
+body {
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bot) 100%);
+  overflow: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+.page-placeholder h1 {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.page-placeholder p {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.page-placeholder nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.page-placeholder nav a {
+  background: var(--ui-bg);
+  border: 3px solid var(--ui-border);
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--sims-blue-deep);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.page-placeholder nav a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--sims-blue-deep);
+}
