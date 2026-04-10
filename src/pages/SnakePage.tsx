@@ -5,9 +5,11 @@ import { useInput } from '../games/snake/useInput';
 import { initialState, levelForScore, reducer } from '../games/snake/state';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import styles from './SnakePage.module.css';
 
 export default function SnakePage() {
+  useDocumentTitle('Snake · Mini games');
   const [state, dispatch] = useReducer(reducer, undefined, initialState);
   const [highscore, setHighscore] = useLocalStorage<number>('snake:highscore', 0);
   const wrapRef = useRef<HTMLDivElement>(null);

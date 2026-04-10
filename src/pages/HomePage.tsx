@@ -8,10 +8,12 @@ import DesktopProjectCards from '../components/layout/DesktopProjectCards';
 import MobileCarousel from '../components/layout/MobileCarousel';
 import SpeechBubble from '../components/ui/SpeechBubble';
 import Loader from '../components/ui/Loader';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { projects } from '../data/projects';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 export default function HomePage() {
+  useDocumentTitle('Anhelina Mahidava — Front-End Developer');
   const isMobile = useIsMobile();
   const [hoveredProject, setHoveredProject] = useState(-1);
 

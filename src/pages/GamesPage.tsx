@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import styles from './GamesPage.module.css';
 
 type Game = {
@@ -43,6 +44,7 @@ function GameCard({ game }: { game: Game }) {
 }
 
 export default function GamesPage() {
+  useDocumentTitle('Mini games · Anhelina Mahidava');
   return (
     <div className={styles.page}>
       <div className={styles.backBar}>
