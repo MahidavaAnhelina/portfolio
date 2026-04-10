@@ -1,0 +1,30 @@
+.hint {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  background: rgba(14, 42, 61, 0.85);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  animation: hintFade 6s ease-in-out forwards;
+  animation-delay: 0.5s;
+  opacity: 0;
+}
+
+@keyframes hintFade {
+  0% { opacity: 0; transform: translate(-50%, -8px); }
+  10%, 70% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -8px); }
+}
+
+@media (max-width: 1100px) {
+  .hint {
+    display: none;
+  }
+}

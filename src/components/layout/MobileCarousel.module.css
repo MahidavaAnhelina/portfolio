@@ -1,0 +1,87 @@
+.carousel {
+  display: none;
+}
+
+.dots {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .carousel {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 72px;
+    z-index: 35;
+    gap: 12px;
+    padding: 8px 20px 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carouselCard {
+    position: relative;
+    flex: 0 0 78vw;
+    max-width: 300px;
+    padding: 12px 14px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+  }
+
+  .carouselCard h3 {
+    font-size: 16px;
+  }
+
+  .carouselCard p[data-desc] {
+    font-size: 11px;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .dots {
+    display: flex;
+    position: fixed;
+    bottom: 212px;
+    left: 0;
+    right: 0;
+    z-index: 36;
+    justify-content: center;
+    gap: 8px;
+    pointer-events: none;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    border: 2px solid var(--sims-blue-deep);
+    transition: all 0.25s ease;
+  }
+
+  .dotActive {
+    background: var(--sims-green);
+    transform: scale(1.4);
+  }
+}
+
+@media (max-width: 700px) {
+  .carouselCard {
+    flex: 0 0 82vw;
+  }
+}
