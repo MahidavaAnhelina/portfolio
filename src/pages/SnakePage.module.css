@@ -1,0 +1,244 @@
+.page {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.canvasWrap {
+  position: absolute;
+  inset: 0;
+}
+
+.backBar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 60;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ui-bg);
+  border: 3px solid var(--ui-border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--sims-blue-deep);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  text-decoration: none;
+}
+
+.back:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--sims-blue-deep);
+}
+
+.hud {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 60;
+  display: flex;
+  gap: 10px;
+}
+
+.hudBox {
+  background: var(--ui-bg);
+  border: 3px solid var(--ui-border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  box-shadow: 0 4px 0 var(--sims-blue-deep);
+  text-align: center;
+  min-width: 72px;
+}
+
+.hudLabel {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.hudValue {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--sims-green-deep);
+  line-height: 1.1;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 42, 61, 0.55);
+  backdrop-filter: blur(3px);
+  padding: 24px;
+}
+
+.overlayBox {
+  background: var(--ui-bg);
+  border: 3px solid var(--ui-border);
+  border-radius: 16px;
+  padding: 28px 36px;
+  box-shadow: 0 8px 0 var(--sims-blue-deep), 0 16px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.overlayTitle {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.overlaySub {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.overlayStats {
+  display: flex;
+  gap: 24px;
+  margin: 4px 0;
+}
+
+.overlayStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.overlayStatLabel {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.overlayStatValue {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--sims-green-deep);
+}
+
+.overlayButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.primaryBtn {
+  background: linear-gradient(180deg, var(--sims-green) 0%, var(--sims-green-deep) 100%);
+  color: white;
+  border: 2px solid var(--sims-green-deep);
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #1e7a42;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #1e7a42;
+}
+
+.primaryBtn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 #1e7a42;
+}
+
+.secondaryBtn {
+  background: linear-gradient(180deg, #ffffff 0%, #e8f2f8 100%);
+  border: 2px solid var(--ui-border);
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--sims-blue-deep);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.secondaryBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--sims-blue-deep);
+}
+
+.secondaryBtn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 var(--sims-blue-deep);
+}
+
+.hintRow {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 700px) {
+  .backBar {
+    top: 12px;
+    left: 12px;
+  }
+  .hud {
+    top: 12px;
+    right: 12px;
+    gap: 6px;
+  }
+  .hudBox {
+    padding: 8px 12px;
+    min-width: 56px;
+  }
+  .hudValue {
+    font-size: 16px;
+  }
+  .back {
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+  .overlayBox {
+    padding: 22px 24px;
+  }
+  .overlayTitle {
+    font-size: 20px;
+  }
+}
