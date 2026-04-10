@@ -7,6 +7,7 @@ import ActionBar from '../components/layout/ActionBar';
 import DesktopProjectCards from '../components/layout/DesktopProjectCards';
 import MobileCarousel from '../components/layout/MobileCarousel';
 import SpeechBubble from '../components/ui/SpeechBubble';
+import Loader from '../components/ui/Loader';
 import { projects } from '../data/projects';
 import { useIsMobile } from '../hooks/useIsMobile';
 
@@ -130,6 +131,8 @@ export default function HomePage() {
       <SpeechBubble text={speechText} visible={!isMobile && hoveredProject >= 0} />
 
       <ActionBar />
+
+      <Loader />
     </>
   );
 }
